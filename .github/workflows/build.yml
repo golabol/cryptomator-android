@@ -20,9 +20,11 @@ jobs:
         with:
           java-version: 17
       - name: Build APK
-        run: bash ./gradlew assembleRelease --stacktrace
+        run: bash ./gradlew assembleRelease --stacktrace --info
+      - name: Debug APK Path
+        run: find . -type f -name "*.apk"
       - name: Upload APK
         uses: actions/upload-artifact@v4.6.2
         with:
           name: app-release-apk
-          path: app/build/outputs/apk/release/app-release.apk
+          path: presentation/build/outputs/apk/release/app-release.apk
