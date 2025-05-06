@@ -4,11 +4,11 @@ on:
   push:
   pull_request_target:
     types: [labeled]
-  workflow_dispatch:
+  workflow_dispatch: # Allow manual trigger
 
 jobs: 
   build:
-    name: Test
+    name: Build and Test
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
@@ -19,5 +19,10 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 17
-      - name: Build and Test
-        run: bash ./gradlew clean test --stacktrace
+      - name: Build APK
+        run: bash ./gradlew assembleRelease --stacktrace
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release-apk
+          path: app/build/outputs/apk/release/app-release.apk
