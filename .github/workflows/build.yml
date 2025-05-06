@@ -20,7 +20,7 @@ jobs:
         with:
           java-version: 17
       - name: Build APK
-        run: bash ./gradlew assembleRelease --stacktrace --info
+        run: bash ./gradlew assembleRelease --stacktrace
       - name: Debug APK Path
         run: find . -type f -name "*.apk"
       - name: Upload APK
