@@ -19,17 +19,28 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 17
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > keystore.jks
       - name: Build APK
         run: bash ./gradlew clean assembleRelease --stacktrace
+      - name: Sign APKs
+        run: |
+          for apk in ./presentation/build/outputs/apk/*/release/*-unsigned.apk; do
+            signed_apk="${apk%-unsigned.apk}-signed.apk"
+            $ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | tail -n 1)/apksigner sign \
+              --ks keystore.jks \
+              --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
+              --ks-key-alias ${{ secrets.KEY_ALIAS }} \
+              --key-pass pass:${{ secrets.KEY_PASSWORD }} \
+              --out "$signed_apk" "$apk"
+          done
       - name: Debug APK Path
         run: find . -type f -name "*.apk"
-      - name: Upload APK
+      - name: Cleanup Keystore
+        run: rm -f keystore.jks
+      - name: Upload Signed APKs
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: unsigned-apks
-          path: |
-            ./presentation/build/outputs/apk/fdroid/release/presentation-fdroid-release-unsigned.apk
-            ./presentation/build/outputs/apk/lite/release/presentation-lite-release-unsigned.apk
-            ./presentation/build/outputs/apk/accrescent/release/presentation-accrescent-release-unsigned.apk
-            ./presentation/build/outputs/apk/apkstore/release/presentation-apkstore-release-unsigned.apk
-            ./presentation/build/outputs/apk/playstore/release/presentation-playstore-release-unsigned.apk
+          name: signed-apks
+          path: ./presentation/build/outputs/apk/*/release/*-signed.apk
