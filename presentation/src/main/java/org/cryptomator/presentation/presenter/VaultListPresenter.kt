@@ -129,6 +129,7 @@ class VaultListPresenter @Inject constructor( //
 	}
 
 	private fun checkLicense() {
+		return;
 		if (BuildConfig.FLAVOR == "apkstore" || BuildConfig.FLAVOR == "fdroid" || BuildConfig.FLAVOR == "lite" || BuildConfig.FLAVOR == "accrescent") {
 			licenseCheckUseCase //
 				.withLicense("") //
