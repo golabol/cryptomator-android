@@ -26,5 +26,10 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: app-release-apk
-          path: presentation/build/outputs/apk/release/app-release.apk
+          name: unsigned-apks
+          path: |
+            ./presentation/build/outputs/apk/fdroid/release/presentation-fdroid-release-unsigned.apk
+            ./presentation/build/outputs/apk/lite/release/presentation-lite-release-unsigned.apk
+            ./presentation/build/outputs/apk/accrescent/release/presentation-accrescent-release-unsigned.apk
+            ./presentation/build/outputs/apk/apkstore/release/presentation-apkstore-release-unsigned.apk
+            ./presentation/build/outputs/apk/playstore/release/presentation-playstore-release-unsigned.apk
